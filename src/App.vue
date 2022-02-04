@@ -1,32 +1,39 @@
 <template>
-  <div id="app">
-    <div id="nav">
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </div>
-    <router-view/>
-  </div>
+  <v-app>
+    <v-main>
+      {{ helloMessage }} {{ username }}
+      <div>
+        {{ getUserInfo }}
+      </div>
+      <v-container fluid class="px-10">
+        <router-view />
+      </v-container>
+      <Snackbar />
+    </v-main>
+    <v-footer app color="primary" dark> All rights reserved 2021 </v-footer>
+  </v-app>
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-}
+<script lang="ts">
+import Vue from "vue";
+import Snackbar from "@/components/general/Snackbar.vue";
+import { mapGetters } from "vuex";
 
-#nav {
-  padding: 30px;
-}
-
-#nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-#nav a.router-link-exact-active {
-  color: #42b983;
-}
-</style>
+export default Vue.extend({
+  name: "App",
+  components: {
+    Snackbar,
+  },
+  computed: {
+    helloMessage: {
+      get(): string {
+        return this.$store.state.user.username;
+      },
+    },
+    ...mapGetters("user", ["getUserInfo"]),
+  },
+  data: () => ({
+    //
+  }),
+});
+</script>

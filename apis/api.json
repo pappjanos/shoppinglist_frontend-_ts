@@ -1,0 +1,12 @@
+{
+  "localhost:8080": {
+    "AUTH_SERVICE_URL": "http://localhost:3000/v1/auth",
+    "DUMMY_SERVICE_URL": "http://localhost:3000",
+    "PRODUCT_SERVICE_URL": "http://localhost:3000/v1/products"
+  },
+  "murmuring-escarpment-18206.herokuapp.com": {
+    "AUTH_SERVICE_URL": "https://dashboard.heroku.com/apps/lespaulka001-nodetest",
+    "DUMMY_SERVICE_URL": "http://localhost:2222",
+    "PRODUCT_SERVICE_URL": "http://localhost:1111"
+  }
+}
