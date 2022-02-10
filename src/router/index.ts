@@ -18,6 +18,7 @@ const routes: Array<RouteConfig> = [
   {
     path: "/",
     name: "Home",
+    beforeEnter: checkTokenAndUserRole,
     component: Home,
   },
   {

@@ -1,27 +1,30 @@
 <template>
-  <div>home</div>
+  <v-container class="d-flex justify-center">
+    <v-sheet color="white" elevation="1" width="500" class="pa-5">
+      <ProductList :products="products.results" />
+    </v-sheet>
+  </v-container>
 </template>
 
 <script lang="ts">
 import { mapGetters, mapActions } from "vuex";
-import BlogList from "@/components/BlogList.vue";
+import ProductList from "@/components/ProductList.vue";
 import Vue from "vue";
 
 export default Vue.extend({
   name: "Home",
-  components: { BlogList },
+  components: { ProductList },
   computed: {
     ...mapGetters("user", ["user"]),
+    ...mapGetters("products", ["products"]),
   },
   methods: {
-    ...mapActions("blog", ["getBlogEntries"]),
+    ...mapActions("products", ["getAllProducts"]),
   },
-  async created() {
-    /*
-    if (this.user.isloggedIn) {
-      await this.getBlogEntries(this.user.id);
+  async mounted() {
+    if (this.user.isLoggedIn) {
+      await this.getAllProducts();
     }
-    */
   },
 });
 </script>

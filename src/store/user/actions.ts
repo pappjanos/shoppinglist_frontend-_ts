@@ -4,13 +4,14 @@ import { UserState } from "./user-d";
 
 import userService from "../../api/services/userService";
 import dummyService from "../../api/services/dummyService";
+import productsService from "../../api/services/productsService";
 import { parse } from "@/util/jwt";
 import router from "../../router";
 
 function setMessage(
   context: ActionContext<UserState, void>,
   message: string,
-  color: string = "red"
+  color = "red"
 ) {
   context.dispatch(
     "general/setSnackbar",
@@ -23,10 +24,6 @@ function setMessage(
 }
 
 export const actions: ActionTree<UserState, void> = {
-  setEmail(context, to: string) {
-    context.commit("SET_EMAIL", to);
-  },
-
   async login(
     context,
     { email, password }: { email: string; password: string }
@@ -39,12 +36,13 @@ export const actions: ActionTree<UserState, void> = {
       context.commit("SET_USER", {
         email: response.data.user.email,
         isloggedIn: true,
-        roles: response.data.user.role,
+        roles: [response.data.user.role],
         id: response.data.user.id,
       });
 
       // call setAuthToken for all apis here
       dummyService.setAuthToken(response.data.tokens.access.token);
+      productsService.setAuthToken(response.data.tokens.access.token);
 
       setMessage(context, "Succesfull login!", "green");
       router.push({ name: "Home" }).catch(() => {});
@@ -54,8 +52,15 @@ export const actions: ActionTree<UserState, void> = {
   },
 
   reloadUserFromLocalStorage(context) {
-    if (localStorage.getItem("user")) {
+    if (localStorage.getItem("user") && localStorage.getItem("token")) {
       context.commit("RELOAD_USER_FROM_LOCAL_STORAGE");
+
+      const tokenFromLocalStorage: string = <string>(
+        localStorage.getItem("token")
+      );
+      // call setAuthToken for all apis here
+      dummyService.setAuthToken(tokenFromLocalStorage);
+      productsService.setAuthToken(tokenFromLocalStorage);
     } else {
       context.dispatch("logout");
     }
@@ -86,7 +91,12 @@ export const actions: ActionTree<UserState, void> = {
   async logout(context) {
     localStorage.removeItem("token");
     context.commit("LOGOUT_USER");
-    router.push({ name: "Home" }).catch(() => {});
+
+    // call removeAuthToken for all apis here
+    dummyService.removeAuthToken();
+    productsService.removeAuthToken();
+
+    router.push({ name: "Login" }).catch(() => {});
   },
 
   async verifyEmail(context, token) {
